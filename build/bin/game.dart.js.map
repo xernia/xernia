@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "game.dart.js",
+  "sourceRoot": "",
+  "sources": ["packages/$sdk/lib/_internal/compiler/js_lib/js_primitives.dart","game.dart","packages/$sdk/lib/_internal/compiler/js_lib/internal_patch.dart"],
+  "names": ["printString","main","printToConsole"],
+  "mappings": "A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;C;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;;eAoBAA;;;AAIIA;;;;AAOAA;;;AAKAA;;;AAMAA;;;GAOJA;;uB;;QC/CAC;ICeEC;GDbFD;;;;A;A;A;;;A;;;A;A;A;A;A;A;;;;;;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;C;;;;;;;;;;;;;;;;;;;;;;;;;;;;A"
+}
