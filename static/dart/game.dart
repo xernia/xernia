@@ -114,7 +114,46 @@ class LayoutHandler{
 }
 
 class Player{
+  RGB rgb;
+  num x, y;
   
+  Player(RGB rgb, num x, num y){
+    this.rgb = rgb;
+    this.x = x;
+    this.y = y;
+  }
+  
+  void setXY(num x, num y){
+    this.x = x;
+    this.y = y;
+  }
+  
+  void setRGB(rgb){
+    this.rgb = rgb;
+  }
+  
+  DivElement getElement(){
+    DivElement player = new DivElement();
+    
+    player.setAttribute("class", "player");
+    player.style.setProperty("background-color", "rgb("+rgb.toString()+")");
+    player.style.setProperty("left", x.toString()+"px");
+    player.style.setProperty("top", y.toString()+"px");
+    
+    return player;
+  }
+  
+  RGB getRGB(){
+    return rgb;
+  }
+  
+  num getX(){
+    return this.x;
+  }
+  
+  num getY(){
+    return this.y;
+  }
 }
 
 class RGB{
