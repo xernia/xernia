@@ -69,6 +69,15 @@ void main() {
               request.response.close();
           });
         });
+      }else if(new RegExp("/img/(.*)").hasMatch(uri)){
+        new File("static/" + uri.substring(1)).exists().then((bool exists){
+          if(!exists) return;
+            new File("static/" + uri.substring(1)).readAsBytes().then((List<int> contents){
+              request.response.headers.contentType = new ContentType("image", "png");
+              request.response.add(contents);
+              request.response.close();
+          });
+        });
       }else{
           request.response.statusCode = HttpStatus.NOT_FOUND;
           request.response.write("404 Not Found.");

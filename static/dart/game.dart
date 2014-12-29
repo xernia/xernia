@@ -1,10 +1,12 @@
 import "dart:html";
 
-var gw = querySelector("#gameWindow");
+DivElement gw = querySelector("#gameWindow");
 
 void main(){
   WebSocket ws = new WebSocket("ws://localhost:8000/ws");
   GameWindowHandler gamewindow = new GameWindowHandler();
+  LayoutHandler layouthandler = new LayoutHandler(gamewindow);
+  
   gamewindow.clearAndMsg("Connecting.");
   
   ws.onOpen.listen((Event e){
@@ -17,7 +19,7 @@ void main(){
     
     switch(packet[0]){
       case "loadsuccess":
-        gamewindow.clearAndMsg("Got OK from server. Loading assets...");
+        layouthandler.homeScreenLayout();
         break;
       default:
         print("Unknown packet received: "+packet);
@@ -30,7 +32,38 @@ void main(){
 }
 
 class GameWindowHandler{
-  void clearAndMsg(text){
+  void clear(){
+    gw.innerHtml = "";
+  }
+  
+  void clearAndMsg(String text){
     gw.innerHtml = "<h1 class='noticemsg'>$text</h1>";
+  }
+  
+  void addElement(HtmlElement element){
+    gw.append(element);
+  }
+}
+
+class LayoutHandler{
+  GameWindowHandler gwh;
+  
+  LayoutHandler(GameWindowHandler gwh){
+    this.gwh = gwh;
+  }
+  
+  void homeScreenLayout(){
+    gwh.clear();
+    
+    DivElement homeScreen = new DivElement();
+    
+    homeScreen.setAttribute("class", "layout center");
+    homeScreen.style.setProperty("background-color", "#009AFF");
+    
+    homeScreen.innerHtml = "<img src='img/logo.png'>";
+    homeScreen.innerHtml += "<button class='playbutton'>Play</button><br>";
+    homeScreen.innerHtml += "<button class='playbutton registerbutton'>Register</button>";
+    
+    gwh.addElement(homeScreen);
   }
 }

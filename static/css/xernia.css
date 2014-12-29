@@ -1,3 +1,7 @@
+.center{
+  text-align: center;
+}
+
 #gameContainer{
   width: 1000px;
   height: 800px;
@@ -10,6 +14,24 @@
   position: relative;
   width: 1000px;
   height: 800px;
+}
+
+#gameWindow .playbutton{
+  font-size: 4em;
+  margin-top: 400px;
+  border-radius: 30%;
+  background-color: limegreen;
+  color: white;
+  text-align: center;
+}
+
+#gameWindow .registerbutton{
+  margin-top: 5px;
+}
+
+#gameWindow .layout{
+  height: 100%;
+  width: 100%;
 }
 
 #gameWindow .noticemsg{
