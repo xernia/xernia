@@ -56,14 +56,63 @@ class LayoutHandler{
     gwh.clear();
     
     DivElement homeScreen = new DivElement();
+    ButtonElement play = new ButtonElement();
+    ButtonElement register = new ButtonElement();
+    play.setAttribute("class", "playbutton");
+    play.innerHtml = "Play";
+    register.setAttribute("class", "playbutton registerbutton");
+    register.innerHtml = "Register";
+    
+    play.onClick.listen((MouseEvent e){
+      this.loginScreenLayout();
+    });
+    
+    register.onClick.listen((MouseEvent e){
+      this.registerScreenLayout();
+    });
     
     homeScreen.setAttribute("class", "layout center");
     homeScreen.style.setProperty("background-color", "#009AFF");
     
     homeScreen.innerHtml = "<img src='img/logo.png'>";
-    homeScreen.innerHtml += "<button class='playbutton'>Play</button><br>";
-    homeScreen.innerHtml += "<button class='playbutton registerbutton'>Register</button>";
+    homeScreen.append(play);
+    homeScreen.innerHtml += "<br>";
+    homeScreen.append(register);
     
     gwh.addElement(homeScreen);
+    
+    querySelector("[class='playbutton']").onClick.listen((MouseEvent e){
+      play.click(); //hotfix
+    });
+    
+    querySelector("[class='playbutton registerbutton']").onClick.listen((MouseEvent e){
+      register.click(); //hotfix
+    });
   }
+  
+  void loginScreenLayout(){
+    gwh.clear();
+
+    DivElement loginScreen = new DivElement();
+    
+    loginScreen.setAttribute("class", "layout center");
+    loginScreen.style.setProperty("background-color", "#009AFF");
+    
+    gwh.addElement(loginScreen);
+  }
+  
+  void registerScreenLayout(){
+    gwh.clear();
+    
+    DivElement registerScreen = new DivElement();
+    
+    registerScreen.setAttribute("class", "layout center");
+    registerScreen.style.setProperty("background-color", "#009AFF");
+    
+    gwh.addElement(registerScreen);
+  }
+}
+
+class Player{
+  
 }
