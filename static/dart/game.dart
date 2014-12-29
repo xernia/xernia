@@ -116,3 +116,48 @@ class LayoutHandler{
 class Player{
   
 }
+
+class RGB{
+  num r, g, b;
+  
+  RGB(num r, num g, num b){
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+  
+  void reset(num r, num g, num b){
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+  
+  @override
+  String toString(){
+    return r.toString() + ", " + g.toString() + ", " + b.toString();
+  }
+  
+  void setRed(num r){
+    this.r = r;
+  }
+  
+  void setGreen(num g){
+    this.g = g;
+  }
+  
+  void setBlue(num b){
+    this.b = b;
+  }
+  
+  num getRed(){
+    return this.r;
+  }
+  
+  num getBlue(){
+    return this.b;
+  }
+  
+  num getGreen(){
+    return this.g;
+  }
+}
