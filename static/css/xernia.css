@@ -10,6 +10,16 @@
   position: absolute;
 }
 
+.player[class='player register']{
+  width: 600px;
+  height: 600px;
+}
+
+.player[class='player showcase']{
+  width: 200px;
+  height: 200px;
+}
+
 #gameContainer{
   width: 1000px;
   height: 800px;
