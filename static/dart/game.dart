@@ -106,7 +106,8 @@ class LayoutHandler{
   void registerScreenLayout(){
     gwh.clear();
     
-    Player player = new Player(new RGB(100, 100, 100), 10, 100);
+    Player player = new Player("", new RGB(100, 100, 100), 10, 100);
+    RegisterTextAI registertextai = new RegisterTextAI(player);
     SliderAI sliderai = new SliderAI(player);
     
     DivElement registerScreen = new DivElement();
@@ -114,6 +115,18 @@ class LayoutHandler{
     DivElement greenSlider = new DivElement();
     DivElement blueSlider = new DivElement();
     DivElement playerElement = player.getElement(register: true);
+    
+    InputElement username = new InputElement();
+    InputElement password = new InputElement();
+    
+    username.setAttribute("class", "registername");
+    username.setAttribute("id", "username");
+    username.setAttribute("type", "text");
+    username.setAttribute("maxlength", "20");
+    
+    password.setAttribute("class", "registername");
+    password.setAttribute("id", "password");
+    password.setAttribute("type", "password");
     
     redSlider.setAttribute("id", "redslider");
     greenSlider.setAttribute("id", "greenslider");
@@ -126,7 +139,11 @@ class LayoutHandler{
     registerScreen.append(redSlider);
     registerScreen.append(greenSlider);
     registerScreen.append(blueSlider);
+    registerScreen.append(username);
+    registerScreen.append(password);
     gwh.addElement(registerScreen);
+    
+    js.context.callMethod("\$", ["#username"]).callMethod("change", [new js.JsFunction.withThis(new CallbackFunction(registertextai.usernameChange))]);
     
     js.context.callMethod("\$", ["#redslider"]).callMethod('slider', [new js.JsObject.jsify({
       "range": "max",
@@ -155,37 +172,75 @@ class LayoutHandler{
 }
 
 class Player{
+  //for us
+  PlayerMath playermath = new PlayerMath();
+  DivElement player;
+  SpanElement nameElement;
+  bool showcase, register;
+  
+  String name;
   RGB rgb;
   num x, y;
   
-  Player(RGB rgb, num x, num y){
+  Player(String name, RGB rgb, num x, num y){
+    this.name = name;
     this.rgb = rgb;
     this.x = x;
     this.y = y;
   }
   
-  void setXY(num x, num y){
-    this.x = x;
-    this.y = y;
-  }
-  
-  void setRGB(rgb){
-    this.rgb = rgb;
-  }
-  
-  DivElement getElement({showcase: false, register: false}){
-    DivElement player = new DivElement();
-    
+  void setStyles(DivElement player, SpanElement nameElement, bool showcase, bool register){
     player.setAttribute("class", "player"+((showcase) ? " showcase" : "")+((register) ? " register": ""));
     player.style.setProperty("background-color", "rgb("+rgb.toString()+")");
     player.style.setProperty("left", x.toString()+"px");
     player.style.setProperty("top", y.toString()+"px");
     
-    return player;
+    nameElement.setAttribute("class", "name"+((showcase) ? " showcase" : "")+((register) ? " register": ""));
+    nameElement.style.setProperty("left", playermath.getLeftFromElement(player).toString()+"px");
+    nameElement.style.setProperty("top", playermath.getTopFromElement(player).toString()+"px");
+    nameElement.text = this.name;
+  }
+  
+  void setXY(num x, num y){
+    this.x = x;
+    this.y = y;
+    this.setStyles(player, nameElement, showcase, register);
+  }
+  
+  void setName(String name){
+    this.name = name;
+    this.setStyles(player, nameElement, showcase, register);
+  }
+  
+  void setRGB(RGB rgb){
+    this.rgb = rgb;
+    this.setStyles(player, nameElement, showcase, register);
+  }
+  
+  DivElement getElement({showcase: false, register: false}){
+    DivElement body = new DivElement();
+    DivElement player = new DivElement();
+    SpanElement nameElement = new SpanElement();
+    
+    this.setStyles(player, nameElement, showcase, register);
+    
+    body.append(player);
+    body.append(nameElement);
+    
+    this.showcase = showcase;
+    this.register = register;
+    this.player = player;
+    this.nameElement = nameElement;
+    
+    return body;
+  }
+  
+  String getName(){
+    return this.name;
   }
   
   RGB getRGB(){
-    return rgb;
+    return this.rgb;
   }
   
   num getX(){
@@ -254,11 +309,32 @@ class RGB{
   }
 }
 
+class RegisterTextAI{
+  Player p;
+  
+  RegisterTextAI(Player p){
+    this.p = p;
+  }
+  
+  Player getPlayer(){
+    return this.p;
+  }
+  
+  void usernameChange(InputElement input, js.JsObject arg){
+    print(input.value);
+    this.p.setName(input.value);
+  }
+}
+
 class SliderAI{
   Player p;
   
   SliderAI(Player p){
     this.p = p;
+  }
+  
+  Player getPlayer(){
+    return this.p;
   }
   
   void slide(String type, int value){
@@ -267,15 +343,15 @@ class SliderAI{
     switch(type){
       case "red":
         rgb.setRed(value);
-        p.setRGB(rgb);
+        this.p.setRGB(rgb);
         break;
       case "blue":
         rgb.setBlue(value);
-        p.setRGB(rgb);
+        this.p.setRGB(rgb);
         break;
       case "green":
         rgb.setGreen(value);
-        p.setRGB(rgb);
+        this.p.setRGB(rgb);
         break;
     }
     
@@ -292,5 +368,29 @@ class SliderAI{
   
   void slideGreen(DivElement div, js.JsObject event, js.JsObject ui){
     slide("green", ui['value']);
+  }
+}
+
+class PlayerMath{
+  num getTopFromElement(DivElement player){
+    num height;
+    
+    if(player.getAttribute("class") == "player showcase")
+      height = 200;
+    else if(player.getAttribute("class") == "player register")
+      return 710;
+    else
+      height = 50;
+    
+    return num.parse(player.style.getPropertyValue("top").substring(0, 2)) + height;
+  }
+  
+  num getLeftFromElement(DivElement player){
+    if(player.getAttribute("class") == "player showcase")
+      return num.parse(player.style.getPropertyValue("left").substring(0, 3)) + 65;
+    else if(player.getAttribute("class") == "player register")
+      return 260;
+    else
+      return num.parse(player.style.getPropertyValue("left").substring(0, 3));
   }
 }

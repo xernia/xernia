@@ -1,5 +1,22 @@
+.registername{
+  width: 50%;
+}
+
 .center{
   text-align: center;
+}
+
+.name{
+  font-weight: thicker;
+  position: absolute;
+}
+
+.name[class='name showcase']{
+  font-size: 150%;
+}
+
+.name[class='name register']{
+  font-size: 200%;
 }
 
 .player{
