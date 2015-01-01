@@ -1,5 +1,7 @@
-# Don’t commit the following directories created by pub.
+# Donâ€™t commit the following directories created by pub.
 .buildlog
 .pub/
 build/
 packages
+
+config.dart
