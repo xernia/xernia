@@ -17,3 +17,7 @@ Use dart2js to convert it over to Javascript and allow browser support. <br>
 Contains all data for incoming packets sent. <br>
 **dart/sockets/SocketHandler.dart** <br>
 Handles incoming sockets, and other related things.
+
+## I want to host Xernia. What do I do? ##
+Change **config.dart** with your MySQL information.<br>
+Build all depenedencies in pubspec.lock.
