@@ -12,7 +12,9 @@ class SocketHandler{
       List<String> arr = message.toString().split("%");
       
       for(String i in AirtowerData.keys){
-        if(arr.first == i){
+        if(arr.length == 0) return;
+        
+        if(arr[0] == i){
           print("Packet received: "+message.toString()); //dont print unless its a real packet
           arr.remove(i);
           AirtowerData[i](this, socket, arr);

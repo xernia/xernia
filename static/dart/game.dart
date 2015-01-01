@@ -3,9 +3,10 @@ import "dart:js" as js;
 import "dart:html";
 
 DivElement gw = querySelector("#gameWindow");
+WebSocket ws;
 
 void main(){
-  WebSocket ws = new WebSocket("ws://localhost:8000/ws");
+  ws = new WebSocket("ws://localhost:8000/ws");
   GameWindowHandler gamewindow = new GameWindowHandler();
   LayoutHandler layouthandler = new LayoutHandler(gamewindow);
   
@@ -22,6 +23,9 @@ void main(){
     switch(packet[0]){
       case "loadsuccess":
         layouthandler.homeScreenLayout();
+        break;
+      case "error":
+        layouthandler.errorScreenLayout(packet[1]);
         break;
       default:
         print("Unknown packet received: "+packet);
@@ -54,6 +58,28 @@ class LayoutHandler{
     this.gwh = gwh;
   }
   
+  void errorScreenLayout(String errorTxt){
+    DivElement errorScreen = new DivElement();
+    DivElement error = new DivElement();
+    SpanElement errorText = new SpanElement();
+    
+    errorScreen.onClick.listen((MouseEvent e){
+      errorScreen.remove();
+    });
+    
+    errorScreen.setAttribute("class", "layout");
+    errorScreen.setAttribute("id", "errorWindow");
+    
+    error.setAttribute("class", "error");
+    
+    errorText.text = errorTxt;
+    
+    error.append(errorText);
+    errorScreen.append(error);
+    
+    gwh.addElement(errorScreen);
+  }
+  
   void homeScreenLayout(){
     gwh.clear();
     
@@ -82,14 +108,6 @@ class LayoutHandler{
     homeScreen.append(register);
     
     gwh.addElement(homeScreen);
-    
-    querySelector("[class='playbutton']").onClick.listen((MouseEvent e){
-      play.click(); //hotfix
-    });
-    
-    querySelector("[class='playbutton registerbutton']").onClick.listen((MouseEvent e){
-      register.click(); //hotfix
-    });
   }
   
   void loginScreenLayout(){
@@ -107,7 +125,7 @@ class LayoutHandler{
     gwh.clear();
     
     Player player = new Player("", new RGB(100, 100, 100), 10, 100);
-    RegisterTextAI registertextai = new RegisterTextAI(player);
+    RegisterAI registerai = new RegisterAI(player);
     SliderAI sliderai = new SliderAI(player);
     
     DivElement registerScreen = new DivElement();
@@ -118,15 +136,20 @@ class LayoutHandler{
     
     InputElement username = new InputElement();
     InputElement password = new InputElement();
+    InputElement submit = new InputElement();
     
-    username.setAttribute("class", "registername");
+    username.setAttribute("class", "registerinput");
     username.setAttribute("id", "username");
     username.setAttribute("type", "text");
     username.setAttribute("maxlength", "20");
     
-    password.setAttribute("class", "registername");
+    password.setAttribute("class", "registerinput");
     password.setAttribute("id", "password");
     password.setAttribute("type", "password");
+    
+    submit.setAttribute("type", "submit");
+    submit.setAttribute("value", "Register");
+    submit.style.setProperty("width", "100%");
     
     redSlider.setAttribute("id", "redslider");
     greenSlider.setAttribute("id", "greenslider");
@@ -141,9 +164,12 @@ class LayoutHandler{
     registerScreen.append(blueSlider);
     registerScreen.append(username);
     registerScreen.append(password);
+    registerScreen.append(submit);
     gwh.addElement(registerScreen);
     
-    js.context.callMethod("\$", ["#username"]).callMethod("change", [new js.JsFunction.withThis(new CallbackFunction(registertextai.usernameChange))]);
+    js.context.callMethod("\$", ["input[type='submit']"]).callMethod("click", [new js.JsFunction.withThis(new CallbackFunction(registerai.registerSubmit))]);
+    
+    js.context.callMethod("\$", ["#username"]).callMethod("change", [new js.JsFunction.withThis(new CallbackFunction(registerai.usernameChange))]);
     
     js.context.callMethod("\$", ["#redslider"]).callMethod('slider', [new js.JsObject.jsify({
       "range": "max",
@@ -309,10 +335,10 @@ class RGB{
   }
 }
 
-class RegisterTextAI{
+class RegisterAI{
   Player p;
   
-  RegisterTextAI(Player p){
+  RegisterAI(Player p){
     this.p = p;
   }
   
@@ -321,8 +347,14 @@ class RegisterTextAI{
   }
   
   void usernameChange(InputElement input, js.JsObject arg){
-    print(input.value);
     this.p.setName(input.value);
+  }
+  
+  void registerSubmit(InputElement input, js.JsObject arg){
+    InputElement username = querySelector("#username");
+    InputElement password = querySelector("#password");
+    
+    ws.sendString("register%${username.value}%${password.value}%${p.getRGB().toString().replaceAll(", ", "\%")}");
   }
 }
 
